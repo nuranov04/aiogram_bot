@@ -13,7 +13,6 @@ async def send_notify_startup(dp: Dispatcher):
 
 
 async def set_default_commands(dispatcher: Dispatcher):
-    print(123)
     await dispatcher.bot.set_my_commands(
         [
             types.BotCommand("start", 'For starting bot'),

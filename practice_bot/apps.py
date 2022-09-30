@@ -7,7 +7,6 @@ from loader import dp
 async def run(dispatcher):
 
     await set_default_commands(dispatcher)
-    print('asd')
 
     await send_notify_startup(dispatcher)
 
