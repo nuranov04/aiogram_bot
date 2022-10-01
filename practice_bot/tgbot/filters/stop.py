@@ -8,4 +8,3 @@ class CommandStop(Command):
 
     def __init__(self):
         super().__init__(['stop'])
-
