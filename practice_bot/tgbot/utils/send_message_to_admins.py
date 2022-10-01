@@ -18,5 +18,6 @@ async def set_default_commands(dispatcher: Dispatcher):
             types.BotCommand("start", 'For starting bot'),
             types.BotCommand("help", 'For helping'),
             types.BotCommand("stop", 'For stop'),
+            types.BotCommand("get_my_id", 'get my telegram id'),
         ]
     )
