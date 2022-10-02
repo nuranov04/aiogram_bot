@@ -3,4 +3,4 @@ __pycache__/
 .env
 .venv
 env/
-conf.py
+echo_bot/conf.py

@@ -1,7 +1,7 @@
 from bot import bot, dp
 
 from aiogram.types import Message
-from conf import ADMIN_ID
+from echo_bot.conf import ADMIN_ID
 
 
 async def send_message_to_admin(dp):

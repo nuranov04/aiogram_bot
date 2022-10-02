@@ -2,7 +2,7 @@ import asyncio
 
 from aiogram import Bot, Dispatcher, executor
 
-from conf import TOKEN
+from echo_bot.conf import TOKEN
 
 
 loop = asyncio.get_event_loop()
