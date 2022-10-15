@@ -11,3 +11,4 @@ async def tg_start(message: types.Message):
         f"Hi, {message.from_user.first_name if message.from_user.first_name else message.from_user.username}",
         reply_markup=start_keyboard.get_main_menu()
     )
+
