@@ -2,9 +2,8 @@ from aiogram import types
 from aiogram.dispatcher.filters.builtin import CommandStart
 
 import aiohttp
-import json
 
-from tgbot.data.config import API, ACCESS_TOKEN, REFRESH_TOKEN
+from tgbot.data.config import API
 from loader import dp
 from tgbot.keyboards.inline import start_keyboard
 
@@ -23,15 +22,18 @@ async def tg_start(message: types.Message):
             "username_telegram": message.from_user.username,
             'password': message.from_user.username
         }
-        async with session.post(url=f"{API}users/", data=data_user) as resp:
-            if resp.status == 201 or resp.status == 400:
-                data_for_token = {
-                    "username_telegram": message.from_user.username,
-                    'password': message.from_user.username
-                }
-                async with session.post(url=f"{API}token/", data=data_for_token) as token:
-                    global ACCESS_TOKEN, REFRESH_TOKEN
-                    ACCESS_TOKEN = json.loads(await token.text())['access']
-                    REFRESH_TOKEN = json.loads(await token.text())['refresh']
-        print(ACCESS_TOKEN)
-        print(REFRESH_TOKEN)
+        await session.post(url=f"{API}users/", data=data_user)
+        # print(resp.status)
+        # if resp.status == 201 or resp.status == 400:
+        #     data_for_token = {
+        #         "username_telegram": message.from_user.username,
+        #         'password': message.from_user.username
+        #     }
+        #     async with session.post(url=f"{API}token/", data=data_for_token) as token:
+        #         print(token.status)
+        #         print(await token.text())
+        # global ACCESS_TOKEN, REFRESH_TOKEN
+        # ACCESS_TOKEN = json.loads(await token.text())['access']
+        # REFRESH_TOKEN = json.loads(await token.text())['refresh']
+        # print(ACCESS_TOKEN)
+        # print(REFRESH_TOKEN)
