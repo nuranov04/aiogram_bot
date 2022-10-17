@@ -2,7 +2,8 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 import aiohttp
-import contextlib
+import base64
+import json
 
 from tgbot.data.config import API
 from loader import dp
@@ -35,17 +36,16 @@ async def get_post_description(message: types.Message, state: FSMContext):
 async def get_post_image(message: types.Message, state: FSMContext):
     await dp.bot.download_file_by_id(message.document.thumb.file_id,
                                      destination=f'../images/{message.document.file_name}')
-    photo = open(f"../images/{message.document.file_name}", 'r')
     async with state.proxy() as data:
-        data['photo'] = photo
-        data['user'] = message.from_user.id
-
-        async with aiohttp.ClientSession() as session:
-            # print('after')
-            print('\n\n\n\n\n\n')
-            print(data.keys())
+        file = await message.document.get_file()
+        # print(await )
+        with open(f"../images/{message.document.file_name}", 'rb') as f:
+            data['photo'] = f
+            data['user'] = message.from_user.id
+            print(message.from_user.id)
             print(dict(data.items()))
-            print()
-            print('\n\n\n\n\n\n')
-            async with session.post(url=f"{API}posts/", data=dict(data.items())) as resp:
-                print(resp.status)
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url=f"{API}posts/", data=dict(data.items())) as resp:
+                    print(resp.status)
+                    c = await resp.text()
+                    print(c)
