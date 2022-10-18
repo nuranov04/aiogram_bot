@@ -1,5 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from PIL import Image
 
 import aiohttp
 import base64
@@ -28,24 +29,33 @@ async def get_post_title(message: types.Message, state: FSMContext):
 async def get_post_description(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['description'] = message.text
-    await PostState.photo.set()
-    await message.answer(text='send me photo')
+    await PostState.image_url.set()
+    await message.answer(text='send me photo\'s link')
 
 
-@dp.message_handler(content_types=[types.ContentType.DOCUMENT], state=PostState.photo)
+@dp.message_handler(state=PostState.image_url)
 async def get_post_image(message: types.Message, state: FSMContext):
-    await dp.bot.download_file_by_id(message.document.thumb.file_id,
-                                     destination=f'../images/{message.document.file_name}')
-    async with state.proxy() as data:
-        file = await message.document.get_file()
-        # print(await )
-        with open(f"../images/{message.document.file_name}", 'rb') as f:
-            data['photo'] = f
+    if message.text.startswith('https://'):
+        async with state.proxy() as data:
             data['user'] = message.from_user.id
-            print(message.from_user.id)
-            print(dict(data.items()))
+            data['image'] = message.text
+            post_data = {
+                "title": data["title"],
+                "description": data["description"],
+                'user': data['user'],
+                "image": data['image']
+            }
+
             async with aiohttp.ClientSession() as session:
-                async with session.post(url=f"{API}posts/", data=dict(data.items())) as resp:
+                async with session.post(url=f"{API}posts/", data=post_data) as resp:
                     print(resp.status)
                     c = await resp.text()
+                    print(type(c))
                     print(c)
+                    print(c['image'])
+                    if resp.status == 201:
+                        await message.answer_photo(photo=data['image'],
+                                                   caption="<br>{title}</br>\n\n{desc}\n".format(
+                                                       title=data['title'],
+                                                       desc=data['description']), parse_mode='HTML')
+                        await message.answer(text='you created post!')
