@@ -1,6 +1,6 @@
 from aiogram import types
 
-from tgbot.filters.get_my_id import CommandGetMyId
+from tgbot.filters.commands import CommandGetMyId
 from loader import dp
 
 
