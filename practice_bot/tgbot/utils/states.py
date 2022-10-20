@@ -8,4 +8,4 @@ class PostState(StatesGroup):
 
 
 class PaginationState(StatesGroup):
-    page = 0
+    page = State()

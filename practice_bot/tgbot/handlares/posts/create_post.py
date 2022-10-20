@@ -5,6 +5,7 @@ import aiohttp
 
 from tgbot.data.config import API
 from loader import dp
+from tgbot.keyboards.inline.start_keyboard import get_main_menu
 from tgbot.utils.states import PostState
 
 
@@ -45,16 +46,16 @@ async def get_post_image(message: types.Message, state: FSMContext):
         async with aiohttp.ClientSession() as session:
             async with session.post(url=f"{API}posts/", data=post_data) as resp:
                 c = await resp.json()
-                print(type(c))
                 if resp.status == 201:
                     await message.answer_photo(photo=c['image'],
                                                caption="<b>{title}</b>\n\n{desc}\n".format(
                                                    title=c['title'],
                                                    desc=c['description']), parse_mode='HTML')
-                    await message.answer(text='you created post!')
+                    await message.answer(text='you created post!', reply_markup=get_main_menu())
+        await state.finish()
 
 
-@dp.message_handler(state=PostState.image_url)
-async def get_another_text(message: types.Message, state: FSMContext):
-    if not message.text.startswith('https://'):
-        await message.answer(text='send only link')
+# @dp.message_handler(state=PostState.image_url)
+# async def get_another_text(message: types.Message, state: FSMContext):
+#     if not message.text.startswith('https://'):
+#         await message.answer(text='send only link')
