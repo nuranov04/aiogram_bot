@@ -1,17 +1,24 @@
 from aiogram import types
-from aiogram.dispatcher import FSMContext
 
 import aiohttp
 
 from tgbot.data.config import API
 from loader import dp
-from tgbot.utils.states import PostState
 
 
 @dp.callback_query_handler(text='posts')
-async def show_my_posts(message: types.Message):
+async def show_my_posts(call: types.Message):
     async with aiohttp.ClientSession() as session:
-        async with session.get(url=f"{API}users/{message.from_user.id}/") as resp:
+        async with session.get(url=f"{API}users/{call.from_user.id}/") as resp:
             user = await resp.json()
             print(user)
-            print(user.posts)
+            print("\n\n\n\n\n")
+            print(user['post'])
+            for post in user['post']:
+                await dp.bot.send_photo(
+                    chat_id=call.from_user.id,
+                    photo=post['image'],
+                    caption="<b>{title}</b>\n\n{desc}\n".format(
+                                                   title=post['title'],
+                                                   desc=post['description']))
+
