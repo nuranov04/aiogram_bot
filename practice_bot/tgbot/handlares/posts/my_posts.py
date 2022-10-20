@@ -14,11 +14,10 @@ async def show_my_posts(call: types.Message):
             print(user)
             print("\n\n\n\n\n")
             print(user['post'])
-            for post in user['post']:
+            for post in user['post'][0]:
                 await dp.bot.send_photo(
                     chat_id=call.from_user.id,
                     photo=post['image'],
                     caption="<b>{title}</b>\n\n{desc}\n".format(
                                                    title=post['title'],
                                                    desc=post['description']))
-

@@ -6,3 +6,6 @@ class PostState(StatesGroup):
     description = State()
     image_url = State()
 
+
+class PaginationState(StatesGroup):
+    page = 0
