@@ -2,12 +2,11 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 import aiohttp
-import logging
-import os
 
 from tgbot.data.config import API
 from loader import dp
-from tgbot.keyboards.inline.post_keyboards import get_keyboard, get_next_keyboard, get_prev_keyboard
+from tgbot.keyboards.inline.post_keyboards import get_pagination_keyboard, get_next_keyboard
+from tgbot.keyboards.inline.start_keyboard import get_main_menu
 from tgbot.utils.states import PaginationState
 
 
@@ -35,7 +34,8 @@ async def show_my_posts(call: types.CallbackQuery, state: FSMContext):
                         photo=first_post['image'],
                         caption="<b>{title}</b>\n\n{desc}\n".format(
                             title=first_post['title'],
-                            desc=first_post['description']), reply_markup=get_next_keyboard(next_page=1))
+                            desc=first_post['description']),
+                        reply_markup=get_next_keyboard(next_page=1, last_page=len(posts)))
                     async with state.proxy() as data:
                         data['data'] = posts
 
@@ -44,33 +44,43 @@ async def show_my_posts(call: types.CallbackQuery, state: FSMContext):
 async def get_pagination_page(call: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         await call.answer()
-        print(data)
         page = int(call.data.split(":")[1])
 
         post = data['data'][page]
 
         image_url = post['image']
 
-        if len(data['data'])-1 == page:
-            keyboard = get_prev_keyboard(prev_page=page - 1)
-        elif page != 0 and len(data['data']) > page:
-            keyboard = get_keyboard(next_page=page + 1, prev_page=page - 1)
-        elif page == 0:
-            keyboard = get_next_keyboard(next_page=page + 1)
-
-        await call.message.delete()
         await call.message.answer_photo(photo=image_url,
                                         caption="<b>{title}</b>\n\n{desc}\n".format(title=post['title'],
-                                                                                    desc=post[
-                                                                                        'description']),
-                                        reply_markup=keyboard)
+                                                                                    desc=post['description']),
+                                        reply_markup=get_pagination_keyboard(data=data, page=page))
+        await call.message.delete()
 
-        # print(filename)
-        # print(os.path.exists(f"../images/{filename}"))
-        # if os.path.exists(f"../images/{filename}"):
-        #     await call.message.edit_media(media=types.InputMedia(open(f"../images/{filename}")))
-        # else:
-        #     with open(f'../images/{filename}', 'wb') as file:
-        #         async with session.get(image_url) as resp2:
-        #             file.write(await resp2.read())
-        #     await call.message.edit_media(media=types.InputMedia(open(f"../images/{filename}")))
+
+@dp.callback_query_handler(lambda call: call.data.split()[-1] == 'pagination', state=PaginationState.page)
+async def exit_pagination(call: types.CallbackQuery, state: FSMContext):
+    await call.message.answer(text=call.from_user.username, reply_markup=get_main_menu())
+    await state.finish()
+
+
+@dp.callback_query_handler(lambda call: call.data.split(":")[0] == 'last', state=PaginationState.page)
+async def show_last_page(call: types.CallbackQuery, state: FSMContext):
+    page = int(call.data.split(":")[-1])
+    async with state.proxy() as data:
+        print(page)
+        print(len(data['data']))
+        post = data['data'][page-1]
+    await call.message.answer_photo(photo=post['image'],
+                                    caption="<b>{title}</b>\n\n{desc}\n".format(title=post['title'],
+                                                                                desc=post['description']),
+                                    reply_markup=get_pagination_keyboard(data=data, page=page-1))
+
+
+@dp.callback_query_handler(lambda call: call.data.split(":")[0] == 'first', state=PaginationState.page)
+async def show_first_page(call: types.CallbackQuery, state: FSMContext):
+    async with state.proxy() as data:
+        post = data['data'][0]
+    await call.message.answer_photo(photo=post['image'],
+                                    caption="<b>{title}</b>\n\n{desc}\n".format(title=post['title'],
+                                                                                desc=post['description']),
+                                    reply_markup=get_pagination_keyboard(data=data, page=0))

@@ -9,7 +9,7 @@ async def run(dispatcher):
 
     await set_default_commands(dispatcher)
 
-    # await send_notify_startup(dispatcher)
+    await send_notify_startup(dispatcher)
 
 
 if __name__ == "__main__":
