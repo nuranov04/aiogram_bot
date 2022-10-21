@@ -2,6 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 import aiohttp
+import os
 
 from tgbot.data.config import API
 from loader import dp
@@ -10,7 +11,7 @@ from tgbot.utils.states import PostState
 
 
 @dp.callback_query_handler(text='publish')
-async def get_post_image(callback: types.CallbackQuery):
+async def get_post(callback: types.CallbackQuery):
     await PostState.title.set()
     await callback.message.answer(text='Hi, send me title!')
 
@@ -33,29 +34,29 @@ async def get_post_description(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=PostState.image_url, regexp='https://*')
 async def get_post_image(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['user'] = message.from_user.id
-        data['image'] = message.text
-        post_data = {
-            "title": data["title"],
-            "description": data["description"],
-            'user': data['user'],
-            "image": data['image']
-        }
+    if message.text.startswith('https://'):
+        async with state.proxy() as data:
+            data['user'] = message.from_user.id
+            data['image'] = message.text
+            post_data = {
+                "title": data["title"],
+                "description": data["description"],
+                'user': data['user'],
+                "image": data['image']
+            }
 
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url=f"{API}posts/", data=post_data) as resp:
-                c = await resp.json()
-                if resp.status == 201:
-                    await message.answer_photo(photo=c['image'],
-                                               caption="<b>{title}</b>\n\n{desc}\n".format(
-                                                   title=c['title'],
-                                                   desc=c['description']), parse_mode='HTML')
-                    await message.answer(text='you created post!', reply_markup=get_main_menu())
-        await state.finish()
-
-
-# @dp.message_handler(state=PostState.image_url)
-# async def get_another_text(message: types.Message, state: FSMContext):
-#     if not message.text.startswith('https://'):
-#         await message.answer(text='send only link')
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url=f"{API}posts/", data=post_data) as resp:
+                    c = await resp.json()
+                    image_name = c['image'].split('/')[-1]
+                    async with open(f"../images/{image_name}" 'wb') as file:
+                        file.write(c['image'])
+                    if resp.status == 201:
+                        await message.answer_photo(photo=c['image'],
+                                                   caption="<b>{title}</b>\n\n{desc}\n".format(
+                                                       title=c['title'],
+                                                       desc=c['description']), parse_mode='HTML')
+                        await message.answer(text='you created post!', reply_markup=get_main_menu())
+            await state.finish()
+    else:
+        await message.answer(text='send my only link')

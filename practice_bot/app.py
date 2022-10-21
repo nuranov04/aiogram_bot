@@ -1,6 +1,7 @@
 from aiogram import executor
 
-from tgbot.utils.send_message_to_admins import send_notify_startup, set_default_commands
+from tgbot.utils.default_commands import set_default_commands
+from tgbot.utils.send_message_to_admins import send_notify_startup
 from loader import dp
 
 
