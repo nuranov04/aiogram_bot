@@ -1,8 +1,8 @@
-import aiofiles as aiofiles
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 import aiohttp
+import os
 
 from tgbot.data.config import API
 from loader import dp
@@ -46,11 +46,11 @@ async def get_pagination_page(call: types.CallbackQuery, state: FSMContext):
                 data['data'] = user['post']
                 page = int(call.data.split(":")[1])
                 post = data['data'][page]
-                async with session.get(post['image']) as image:
-                    await call.message.edit_media(media=types.InputMedia(await image.read()))
-                    await call.message.edit_caption(caption="<b>{title}</b>\n\n{desc}\n".format(title=post['title'],
-                                                                                                desc=post['description']),
-                                                    reply_markup=get_keyboard(next_page=page + 1,
-                                                                              prev_page=page - 1) if len(
-                                                        data['data']) > page + 1 else get_prev_keyboard(prev_page=page - 1))
-                    await call.answer()
+
+                await call.message.edit_media(media=types.InputMedia())
+                await call.message.edit_caption(caption="<b>{title}</b>\n\n{desc}\n".format(title=post['title'],
+                                                                                            desc=post['description']),
+                                                reply_markup=get_keyboard(next_page=page + 1,
+                                                                          prev_page=page - 1) if len(
+                                                    data['data']) > page + 1 else get_prev_keyboard(prev_page=page - 1))
+                await call.answer()
