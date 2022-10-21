@@ -8,7 +8,7 @@ def get_keyboard(next_page=None, prev_page=None):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [
             InlineKeyboardButton(text="Previous", callback_data=f'page:{prev_page}'),
-            InlineKeyboardButton(text="Next", callback_data=f'page:{next_page}') if next_page else None,
+            InlineKeyboardButton(text="Next", callback_data=f'page:{next_page}'),
         ],
     ])
     return keyboard
