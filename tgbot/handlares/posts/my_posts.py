@@ -67,8 +67,6 @@ async def exit_pagination(call: types.CallbackQuery, state: FSMContext):
 async def show_last_page(call: types.CallbackQuery, state: FSMContext):
     page = int(call.data.split(":")[-1])
     async with state.proxy() as data:
-        print(page)
-        print(len(data['data']))
         post = data['data'][page-1]
     await call.message.answer_photo(photo=post['image'],
                                     caption="<b>{title}</b>\n\n{desc}\n".format(title=post['title'],

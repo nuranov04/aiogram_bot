@@ -47,7 +47,6 @@ def get_next_keyboard(*, next_page, last_page):
 
 
 def get_pagination_keyboard(*, data, page):
-
     keyboard = None
     if page == 0:
         keyboard = get_next_keyboard(next_page=page + 1, last_page=len(data['data']))
@@ -55,5 +54,4 @@ def get_pagination_keyboard(*, data, page):
         keyboard = get_prev_keyboard(prev_page=page - 1)
     elif page != 0 and len(data['data']) > page:
         keyboard = get_keyboard(last_page=len(data['data']), next_page=page + 1, prev_page=page - 1)
-    print(keyboard)
     return keyboard
