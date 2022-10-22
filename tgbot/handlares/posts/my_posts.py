@@ -35,7 +35,7 @@ async def show_my_posts(call: types.CallbackQuery, state: FSMContext):
                         caption="<b>{title}</b>\n\n{desc}\n".format(
                             title=first_post['title'],
                             desc=first_post['description']),
-                        reply_markup=get_next_keyboard(next_page=1, last_page=len(posts)))
+                        reply_markup=get_next_keyboard(next_page=1, last_page=len(posts), post_id=first_post['id']))
                     async with state.proxy() as data:
                         data['data'] = posts
 
@@ -53,7 +53,7 @@ async def get_pagination_page(call: types.CallbackQuery, state: FSMContext):
         await call.message.answer_photo(photo=image_url,
                                         caption="<b>{title}</b>\n\n{desc}\n".format(title=post['title'],
                                                                                     desc=post['description']),
-                                        reply_markup=get_pagination_keyboard(data=data, page=page))
+                                        reply_markup=get_pagination_keyboard(data=data, page=page, post_id=post['id']))
         await call.message.delete()
 
 
@@ -71,7 +71,7 @@ async def show_last_page(call: types.CallbackQuery, state: FSMContext):
     await call.message.answer_photo(photo=post['image'],
                                     caption="<b>{title}</b>\n\n{desc}\n".format(title=post['title'],
                                                                                 desc=post['description']),
-                                    reply_markup=get_pagination_keyboard(data=data, page=page-1))
+                                    reply_markup=get_pagination_keyboard(data=data, page=page-1, post_id=post['id']))
 
 
 @dp.callback_query_handler(lambda call: call.data.split(":")[0] == 'first', state=PaginationState.page)
@@ -81,4 +81,4 @@ async def show_first_page(call: types.CallbackQuery, state: FSMContext):
     await call.message.answer_photo(photo=post['image'],
                                     caption="<b>{title}</b>\n\n{desc}\n".format(title=post['title'],
                                                                                 desc=post['description']),
-                                    reply_markup=get_pagination_keyboard(data=data, page=0))
+                                    reply_markup=get_pagination_keyboard(data=data, page=0, post_id=post['id']))

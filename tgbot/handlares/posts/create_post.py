@@ -46,16 +46,16 @@ async def get_post_image(message: types.Message, state: FSMContext):
 
             async with aiohttp.ClientSession() as session:
                 async with session.post(url=f"{API}posts/", data=post_data) as resp:
-                    c = await resp.json()
-                    image_url = c['image']
+                    response_data = await resp.json()
+                    # image_url = c['image']
                     # with open(f'./images/{image_url.split("/")[-1]}', 'wb') as file:
                     #     async with session.get(image_url) as resp2:
                     #         file.write(await resp2.read())
                     if resp.status == 201:
-                        await message.answer_photo(photo=c['image'],
+                        await message.answer_photo(photo=response_data['image'],
                                                    caption="<b>{title}</b>\n\n{desc}\n".format(
-                                                       title=c['title'],
-                                                       desc=c['description']), parse_mode='HTML')
+                                                       title=response_data['title'],
+                                                       desc=response_data['description']), parse_mode='HTML')
                         await message.answer(text='you created post!', reply_markup=get_main_menu())
             await state.finish()
     else:
