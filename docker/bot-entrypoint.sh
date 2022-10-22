@@ -7,4 +7,4 @@ do
     sleep 2
 done
 
-#python3 telegram_bot/app.py
+python3 telegram_bot/app.py

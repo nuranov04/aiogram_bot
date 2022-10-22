@@ -8,3 +8,4 @@ RUN pip install --upgrade pip
 RUN pip install -r /telegram_bot/requirements.txt
 ADD . /telegram_bot/
 CMD ["chmod", "+x", "/telegram_bot/docker/bot-entrypoint.sh"]
+EXPOSE 8080
