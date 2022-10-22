@@ -48,9 +48,9 @@ async def get_post_image(message: types.Message, state: FSMContext):
                 async with session.post(url=f"{API}posts/", data=post_data) as resp:
                     c = await resp.json()
                     image_url = c['image']
-                    with open(f'./images/{image_url.split("/")[-1]}', 'wb') as file:
-                        async with session.get(image_url) as resp2:
-                            file.write(await resp2.read())
+                    # with open(f'./images/{image_url.split("/")[-1]}', 'wb') as file:
+                    #     async with session.get(image_url) as resp2:
+                    #         file.write(await resp2.read())
                     if resp.status == 201:
                         await message.answer_photo(photo=c['image'],
                                                    caption="<b>{title}</b>\n\n{desc}\n".format(
