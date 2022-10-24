@@ -43,7 +43,7 @@ def get_next_keyboard(*, next_page, last_page, post_id):
         ],
         [
             InlineKeyboardButton(text='Back', callback_data='exit pagination'),
-            InlineKeyboardButton(text='Delete', callback_data='delete:{post_id}'),
+            InlineKeyboardButton(text='Delete', callback_data=f'delete:{post_id}'),
         ]
     ])
     return keyboard
@@ -57,4 +57,12 @@ def get_pagination_keyboard(*, data, page, post_id):
         keyboard = get_prev_keyboard(prev_page=page - 1, post_id=post_id)
     elif page != 0 and len(data['data']) > page:
         keyboard = get_keyboard(last_page=len(data['data']), next_page=page + 1, prev_page=page - 1, post_id=post_id)
+    return keyboard
+
+
+def get_back_keyboard():
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(text='Back', callback_data='exit pagination')
+        ]])
     return keyboard
