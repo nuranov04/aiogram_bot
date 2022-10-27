@@ -14,4 +14,4 @@ async def create_post_like(call: types.CallbackQuery, state: FSMContext):
     if result == 201:
         await call.answer("post id created")
     else:
-        await call.answer("sorry try later")
+        await call.answer("sorry, but before you liked this post :)")

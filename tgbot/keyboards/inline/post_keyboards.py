@@ -12,6 +12,7 @@ def get_main_post_keyboard(*, post_id, next_page, prev_page) -> InlineKeyboardMa
         ],
         [
             InlineKeyboardButton(text='Exit', callback_data='exit pagination'),
+            InlineKeyboardButton(text='like', callback_data=f'like {post_id}'),
             InlineKeyboardButton(text='delete', callback_data=f'delete:{post_id}'),
         ],
     ])
@@ -26,6 +27,7 @@ def get_prev_keyboard(*, prev_page, post_id) -> InlineKeyboardMarkup:
         ],
         [
             InlineKeyboardButton(text='Exit', callback_data='exit pagination'),
+            InlineKeyboardButton(text='like', callback_data=f'like {post_id}'),
             InlineKeyboardButton(text='Delete', callback_data=f'delete:{post_id}')
         ]
     ])
