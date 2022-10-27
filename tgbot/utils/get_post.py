@@ -20,4 +20,5 @@ async def get_user_post(*, post_id: int or str, ):
 async def delete_user_post(*, post_id: int or str):
     async with aiohttp.ClientSession() as session:
         async with session.delete(url=f"{API}posts/{post_id}") as resp:
-            return await resp.json()
+            print(await resp.text())
+            return await resp.text()
