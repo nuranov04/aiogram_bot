@@ -39,6 +39,7 @@ def get_next_keyboard(*, next_page: int or str, post_id: int or str) -> InlineKe
         ],
         [
             InlineKeyboardButton(text='Exit', callback_data='exit pagination'),
+            InlineKeyboardButton(text='like', callback_data=f'like {post_id}'),
             InlineKeyboardButton(text='Delete', callback_data=f'delete:{post_id}'),
         ]
     ])

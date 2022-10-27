@@ -6,6 +6,7 @@ import aiohttp
 from tgbot.data.config import API
 from loader import dp
 from tgbot.keyboards.inline.start_keyboard import get_main_menu
+from tgbot.utils.get_post import create_post
 from tgbot.utils.states import PostState
 
 
@@ -43,13 +44,12 @@ async def get_post_image(message: types.Message, state: FSMContext):
                 'user': data['user'],
                 "image": data['image']
             }
-
-            async with aiohttp.ClientSession() as session:
-                async with session.post(url=f"{API}posts/", data=post_data) as resp:
-                    response_data = await resp.json()
-                    if resp.status == 201:
-                        # awai
-                        await message.answer(text='you created post!', reply_markup=get_main_menu())
-            await state.finish()
+            resp = await create_post(post_data=post_data)
+            if resp == 201:
+                await message.answer(text='you created post!', reply_markup=get_main_menu())
+                await state.finish()
+            else:
+                await message.answer(
+                    text="Sorry, try again. You can see instruction how publish post with this command /help")
     else:
         await message.answer(text='send my only link')

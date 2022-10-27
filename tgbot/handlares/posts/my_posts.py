@@ -7,7 +7,6 @@ from tgbot.keyboards.inline.post_keyboards import (
     get_next_keyboard,
     get_back_keyboard
 )
-from tgbot.keyboards.inline.start_keyboard import get_main_menu
 from tgbot.utils.get_post import (
     get_user_posts,
     get_user_post
