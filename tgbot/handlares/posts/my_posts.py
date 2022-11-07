@@ -7,6 +7,7 @@ from tgbot.keyboards.inline.post_keyboards import (
     get_next_keyboard,
     get_back_keyboard
 )
+from tgbot.keyboards.inline.start_keyboard import get_main_menu 
 from tgbot.utils.get_post import (
     get_user_posts,
     get_user_post
@@ -19,7 +20,7 @@ async def show_my_posts(call: types.CallbackQuery, state: FSMContext):
     posts = await get_user_posts(user_id=call.from_user.id)
     await call.message.delete()
     if len(posts) == 0:
-        await call.message.answer(text='you don\'t have any posts')
+        await call.message.answer(text='you don\'t have any posts', reply_markup=get_main_menu())
     elif len(posts) == 1:
         await dp.bot.send_photo(
             chat_id=call.from_user.id,

@@ -43,6 +43,7 @@ async def get_post_image(message: types.Message, state: FSMContext):
                 "image": data['image']
             }
             resp = await create_post(post_data=post_data)
+            
             if resp == 201:
                 await message.answer(text='you created post!', reply_markup=get_main_menu())
                 await state.finish()
