@@ -7,11 +7,6 @@ from loader import dp
 
 @dp.inline_handler()
 async def inline_get_my_id(inline_query: types.InlineQuery):
-    # print(inline_query, )
-    # print(inline_query.query, )
-    # text = inline_query.query
-    # print(text)
-    # await inline_query.answer(inline_query.from_user.id)
     text = inline_query.query or 'echo'
     link = "https://ru.wikipedia.org/wiki/"+text
     input_content = types.InputTextMessageContent(message_text=link)

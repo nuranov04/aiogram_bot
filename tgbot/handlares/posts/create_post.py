@@ -1,8 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-import aiohttp
-
 from tgbot.data.config import API
 from loader import dp
 from tgbot.keyboards.inline.start_keyboard import get_main_menu
